@@ -1,0 +1,27 @@
+logging:
+    level:
+        guru.ysy.aiexpert: DEBUG
+jdk:
+    vendor:
+        name: Oracle-JDK
+        version: ${java.version}
+gradle:
+    version: 8.7
+    DSL: Kotlin
+spring:
+    application:
+        name: AI-Func
+        version: 0.0.1-SNAPSHOT
+        description: DEMO AI Function calling with Mistral AI
+    output:
+        ansi:
+            enabled: always
+    config:
+        import: classpath:env/Mistral.env[.properties]
+    ai:
+        mistralai:
+            api-key: ${MISTRAL_API_KEY}
+            chat:
+                options:
+                    model: mistral-large-latest
+                    temperature: 0.8
