@@ -18,6 +18,7 @@ spring:
             enabled: always
     config:
         import: classpath:env/Mistral.env[.properties]
+        import: classpath:env/weather.env[.properties]
     ai:
         mistralai:
             api-key: ${MISTRAL_API_KEY}
@@ -25,3 +26,7 @@ spring:
                 options:
                     model: mistral-large-latest
                     temperature: 0.8
+weather:
+    api:
+        url: "https://api.api-ninjas.com/v1/weather"
+        key: ${WEATHER_API_KEY}
