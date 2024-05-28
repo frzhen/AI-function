@@ -17,8 +17,7 @@ spring:
         ansi:
             enabled: always
     config:
-        import: classpath:env/Mistral.env[.properties]
-        import: classpath:env/weather.env[.properties]
+        import: classpath:env/Mistral.env[.properties],classpath:env/weather.env[.properties]
     ai:
         mistralai:
             api-key: ${MISTRAL_API_KEY}

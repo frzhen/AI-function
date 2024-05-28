@@ -2,6 +2,7 @@ package guru.ysy.aifunc.functions;
 
 import guru.ysy.aifunc.models.WeatherRequest;
 import guru.ysy.aifunc.models.WeatherResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestClient;
@@ -14,7 +15,7 @@ import java.util.function.Function;
  * @Email: fred.zhen@gmail.com
  */
 @Slf4j
-public class WeatherServiceFunction implements Function<WeatherRequest, WeatherResponse> {
+public class WeatherService implements Function<WeatherRequest, WeatherResponse> {
 
     @Value("${weather.api.url}")
     private String weatherApiUrl;
