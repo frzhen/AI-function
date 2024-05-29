@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RequiredArgsConstructor
 @RestController
-@Tag(name = "Question Controller", description = "Endpoints for Question to Mistral AI")
+@Tag(name = "Question Controller", description = "Endpoints for getting current weather with AI")
 public class QuestionController {
 
     private final AiService aiService;
 
-    @PostMapping("/ask")
-    public Answer getAnswer(@RequestBody Question question) {
+    @PostMapping("/weather")
+    public Answer askQuestion(@RequestBody Question question) {
         return aiService.getAnswer(question);
     }
 }

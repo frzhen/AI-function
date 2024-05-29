@@ -13,15 +13,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonClassDescription("Weather API Request")
 public record WeatherRequest(
-        @JsonProperty(required = true, value="city")
+        @JsonProperty(required = true, value="location")
         @JsonPropertyDescription("The city and state e.g. San Francisco, CA")
-        String city,
+        String location,
 
-        @JsonProperty(required = false)
+        @JsonProperty( required = false, value="state")
         @JsonPropertyDescription("Optional State for US cities only. Use full name of State")
         String state,
 
-        @JsonProperty(required = false)
+        @JsonProperty(required = false, value="country")
         @JsonPropertyDescription("Optional Country name")
         String country
         ) {

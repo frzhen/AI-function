@@ -6,7 +6,6 @@ import guru.ysy.aifunc.models.Question;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
@@ -27,24 +26,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AiServiceImpl implements AiService {
 
-
+    @Value("${weather.api.key}")
+    private String weatherApiKey;
 
     // Here we need specifically use  Mistral AI Chat Client
     final MistralAiChatClient mistralAiChatClient;
 
+    @Override
     public Answer getAnswer(Question question) {
-        UserMessage userMessage = new UserMessage(question.question());
-        var promptOptions = MistralAiChatOptions.builder()
+
+        ChatOptions promptOptions = MistralAiChatOptions.builder()
                 .withFunctionCallbacks(
                     List.of(
-                            new FunctionCallbackWrapper<>(
-                                    "CurrentWeather",
-                                    "Get the current weather for a location",
-                                    new WeatherService()
+                            FunctionCallbackWrapper.builder(new WeatherService(weatherApiKey))
+                                    .withName("CurrentWeather")
+                                    .withDescription("Get the current weather for a location")
+                                    .build()
                             )
                         )
-                )
                 .build();
+
+        Message userMessage = new PromptTemplate(question.question()).createMessage();
 
         ChatResponse response = mistralAiChatClient.call(
                 new Prompt(

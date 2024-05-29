@@ -17,7 +17,7 @@ spring:
         ansi:
             enabled: always
     config:
-        import: classpath:env/Mistral.env[.properties],classpath:env/weather.env[.properties]
+        import: classpath:env/keys.env[.properties]
     ai:
         mistralai:
             api-key: ${MISTRAL_API_KEY}
@@ -27,5 +27,4 @@ spring:
                     temperature: 0.8
 weather:
     api:
-        url: "https://api.api-ninjas.com/v1/weather"
         key: ${WEATHER_API_KEY}

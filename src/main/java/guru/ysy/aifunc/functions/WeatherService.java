@@ -4,9 +4,11 @@ import guru.ysy.aifunc.models.WeatherRequest;
 import guru.ysy.aifunc.models.WeatherResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.client.RestClient;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.function.Function;
 
 /**
@@ -15,36 +17,45 @@ import java.util.function.Function;
  * @Email: fred.zhen@gmail.com
  */
 @Slf4j
+@RequiredArgsConstructor
 public class WeatherService implements Function<WeatherRequest, WeatherResponse> {
 
-    @Value("${weather.api.url}")
-    private String weatherApiUrl;
+    public static final String WEATHER_URL = "https://api.api-ninjas.com/v1/weather";
 
-    @Value("${weather.api.key}")
-    private String weatherApiKey;
+    private final String weatherApiKey;
 
     @Override
     public WeatherResponse apply(WeatherRequest request) {
-        RestClient restClient = RestClient.builder()
-                .baseUrl(weatherApiUrl)
-                .defaultHeaders(httpHeaders -> {
-                    httpHeaders.set("X-Api-Key", weatherApiKey);
-                    httpHeaders.set("Content-Type", "application/json");
-                    httpHeaders.set("Accept", "application/json");
-                }).build();
+        RestTemplate restTemplate = new RestTemplate();
 
-        return restClient.get().uri(uriBuilder -> {
-            log.info("Building URI for weather request: {}", request);
-            uriBuilder.queryParam("city", request.city());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("X-Api-Key", weatherApiKey);
 
-            if (request.state() != null && !request.state().isBlank()) {
+        log.info("Building URI for weather request: {}", request);
+
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(WEATHER_URL)
+                .queryParam("city", request.location());
+        if (request.state() != null && !request.state().isBlank()) {
                 uriBuilder.queryParam("state", request.state());
-            }
+        }
 
-            if (request.country() != null && !request.country().isBlank()) {
-                uriBuilder.queryParam("country", request.country());
-            }
-            return uriBuilder.build();
-        }).retrieve().body(WeatherResponse.class);
+        if (request.country() != null && !request.country().isBlank()) {
+            uriBuilder.queryParam("country", request.country());
+        }
+        URI uri = uriBuilder.build().toUri();
+
+        ResponseEntity<WeatherResponse> response = restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                WeatherResponse.class
+        );
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return response.getBody();
+        } else {
+            throw new RuntimeException("Weather API request failed: " + response.getStatusCode());
+        }
     }
 }
