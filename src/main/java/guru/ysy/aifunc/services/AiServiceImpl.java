@@ -35,7 +35,7 @@ public class AiServiceImpl implements AiService {
     @Override
     public Answer getAnswer(Question question) {
 
-        ChatOptions promptOptions = MistralAiChatOptions.builder()
+        MistralAiChatOptions promptOptions = MistralAiChatOptions.builder()
                 .withFunctionCallbacks(
                     List.of(
                             FunctionCallbackWrapper.builder(new WeatherService(weatherApiKey))
